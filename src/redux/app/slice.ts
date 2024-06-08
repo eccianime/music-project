@@ -1,10 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '..';
-
-interface AppState {
-  isLoading: boolean;
-}
+import type { AppState } from '../../types';
 
 const initialState: AppState = {
   isLoading: false,

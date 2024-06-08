@@ -9,6 +9,7 @@ export default function Screen1() {
   const scrollRef = useRef<ScrollView>(null);
   const { colors } = useTheme();
   const { navigate } = useNavigation();
+  const [currentIndex, setCurrentIndex] = useState(0);
   const steps = [
     {
       title: 'Explora Tu Mundo Musical',
@@ -30,101 +31,103 @@ export default function Screen1() {
     },
   ];
   return (
-    <ScrollView
-      ref={scrollRef}
-      horizontal
-      bounces={false}
-      scrollEnabled={false}
-      showsHorizontalScrollIndicator={false}
-    >
-      {steps.map((step, index) => (
-        <VStack w={SCREEN_WIDTH} key={`step-${index}`}>
-          <VStack flex={1} />
-          <VStack mx={6} mb={10}>
-            <Text
-              fontFamily={'bold'}
-              fontSize={'2xl'}
-              textAlign={'center'}
-              mb={3}
-            >
-              {step.title}
-            </Text>
-            <Text
-              color={'coolGray.500'}
-              textAlign={'center'}
-              fontFamily={'medium'}
-              mb={5}
-            >
-              {step.description}
-            </Text>
-            <HStack mb={5} justifyContent={'space-between'}>
-              <Pressable
-                _pressed={{
-                  opacity: index > 0 ? 0.5 : 0,
-                }}
-                onPress={() => {
-                  if (index > 0) {
-                    scrollRef.current.scrollTo({
-                      x: (index - 1) * SCREEN_WIDTH,
-                      animated: true,
-                    });
-                  }
-                }}
-                opacity={index === 0 ? 0 : 1}
-                borderRadius={'full'}
-                borderWidth={1}
-                h={10}
-                w={10}
-                borderColor={'primary.500'}
-                justifyContent={'center'}
-                alignItems={'center'}
+    <>
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        bounces={false}
+        scrollEnabled={false}
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={(e) => {
+          setCurrentIndex(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
+        }}
+      >
+        {steps.map((step, index) => (
+          <VStack w={SCREEN_WIDTH} key={`step-${index}`}>
+            <VStack flex={1} />
+            <VStack mx={6} mb={10}>
+              <Text
+                fontFamily={'bold'}
+                fontSize={'2xl'}
+                textAlign={'center'}
+                mb={3}
               >
-                <Ionicons
-                  name='arrow-back'
-                  color={colors.primary[500]}
-                  size={24}
-                />
-              </Pressable>
-              <HStack alignItems={'center'}>
-                {steps.map((_, indexj) => (
-                  <VStack
-                    key={Math.random()}
-                    h={indexj === index ? 3 : 2}
-                    w={indexj === index ? 3 : 2}
-                    mx={1}
-                    bg={indexj === index ? 'primary.500' : 'coolGray.300'}
-                    borderRadius={'full'}
-                  />
-                ))}
-              </HStack>
-              <Pressable
-                _pressed={{
-                  opacity: 0.5,
-                }}
-                onPress={() => {
-                  if (index + 1 === 3) {
-                    navigate('Sign Up');
-                  } else {
-                    scrollRef.current.scrollTo({
-                      x: (index + 1) * SCREEN_WIDTH,
-                      animated: true,
-                    });
-                  }
-                }}
-                borderRadius={'full'}
-                borderWidth={1}
-                h={10}
-                w={10}
-                justifyContent={'center'}
-                alignItems={'center'}
-                bg={'primary.500'}
+                {step.title}
+              </Text>
+              <Text
+                color={'coolGray.500'}
+                textAlign={'center'}
+                fontFamily={'medium'}
+                fontSize={'md'}
+                mb={5}
               >
-                <Ionicons name='arrow-forward' color={'white'} size={24} />
-              </Pressable>
-            </HStack>
+                {step.description}
+              </Text>
+            </VStack>
           </VStack>
-        </VStack>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+      <HStack mb={5} justifyContent={'space-between'} mx={5}>
+        <Pressable
+          _pressed={{
+            opacity: currentIndex > 0 ? 0.5 : 0,
+          }}
+          onPress={() => {
+            if (currentIndex > 0) {
+              scrollRef.current.scrollTo({
+                x: (currentIndex - 1) * SCREEN_WIDTH,
+                animated: true,
+              });
+            }
+          }}
+          opacity={currentIndex === 0 ? 0 : 1}
+          borderRadius={'full'}
+          borderWidth={1}
+          h={10}
+          w={10}
+          borderColor={'primary.500'}
+          justifyContent={'center'}
+          alignItems={'center'}
+        >
+          <Ionicons name='arrow-back' color={colors.primary[500]} size={24} />
+        </Pressable>
+        <HStack alignItems={'center'}>
+          {steps.map((_, indexj) => (
+            <VStack
+              key={Math.random()}
+              h={indexj === currentIndex ? 3 : 2}
+              w={indexj === currentIndex ? 3 : 2}
+              mx={1}
+              bg={indexj === currentIndex ? 'primary.500' : 'coolGray.300'}
+              borderRadius={'full'}
+            />
+          ))}
+        </HStack>
+        <Pressable
+          _pressed={{
+            opacity: 0.5,
+          }}
+          onPress={() => {
+            if (currentIndex + 1 === 3) {
+              navigate('Sign Up');
+            } else {
+              scrollRef.current.scrollTo({
+                x: (currentIndex + 1) * SCREEN_WIDTH,
+                animated: true,
+              });
+            }
+          }}
+          borderRadius={'full'}
+          borderWidth={1}
+          h={10}
+          w={10}
+          justifyContent={'center'}
+          alignItems={'center'}
+          bg={'primary.500'}
+        >
+          <Ionicons name='arrow-forward' color={'white'} size={24} />
+        </Pressable>
+      </HStack>
+    </>
   );
 }
